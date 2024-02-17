@@ -12,7 +12,7 @@ const productItemSchema = new mongoose.Schema({
 export type ProductItemType = InferSchemaType<typeof productItemSchema>;
 
 const storeSchema = new mongoose.Schema({
-  shopName: { type: String, required: true },
+  storeName: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },
   deliveryPrice: { type: Number, required: true },
