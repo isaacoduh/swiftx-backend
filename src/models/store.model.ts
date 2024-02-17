@@ -15,6 +15,7 @@ const storeSchema = new mongoose.Schema({
   shopName: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },
+  deliveryPrice: { type: Number, required: true },
   productItems: [productItemSchema],
   imageUrl: { type: String, required: true },
   lastUpdated: { type: Date, required: true },
