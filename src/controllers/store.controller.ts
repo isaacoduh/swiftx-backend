@@ -1,4 +1,7 @@
+// import { mongoose } from "mongoose";
 import { Request, Response } from "express";
+import cloudinary from "cloudinary";
+
 import Store from "../models/store.model";
 
 const getStore = async (req: Request, res: Response) => {
@@ -69,4 +72,29 @@ const searchStore = async (req: Request, res: Response) => {
   }
 };
 
-export default { getStore, searchStore };
+const createStore = async (req: Request, res: Response) => {
+  try {
+    // check if existing user for logged in user
+    const imageUrl = await uploadImage(req.file as Express.Multer.File);
+
+    const store = new Store(req.body);
+    store.imageUrl = imageUrl;
+    // store user
+    store.lastUpdated = new Date();
+    await store.save();
+    res.status(201).send(store);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+const uploadImage = async (file: Express.Multer.File) => {
+  const image = file;
+  const base64Image = Buffer.from(image.buffer).toString("base64");
+  const dataURI = `data:${image.mimetype};base64,${base64Image}`;
+  const uploadResponse = await cloudinary.v2.uploader.upload(dataURI);
+  return uploadResponse.url;
+};
+
+export default { getStore, searchStore, createStore };
