@@ -89,6 +89,22 @@ const createStore = async (req: Request, res: Response) => {
   }
 };
 
+const updateStoreProducts = async (req: Request, res: Response) => {
+  try {
+    const store = await Store.findOne({ _id: req.params.storeId });
+    if (!store) {
+      return res.status(404).json({ message: "restaurant not found" });
+    }
+    store.productItems = req.body.productItems;
+    store.lastUpdated = new Date();
+    await store.save();
+    res.status(200).send(store);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
 const uploadImage = async (file: Express.Multer.File) => {
   const image = file;
   const base64Image = Buffer.from(image.buffer).toString("base64");
@@ -97,4 +113,4 @@ const uploadImage = async (file: Express.Multer.File) => {
   return uploadResponse.url;
 };
 
-export default { getStore, searchStore, createStore };
+export default { getStore, searchStore, createStore, updateStoreProducts };

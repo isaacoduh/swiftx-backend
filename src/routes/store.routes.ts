@@ -12,4 +12,8 @@ const upload = multer({
 router.post("/", upload.single("imageFile"), storeController.createStore);
 router.get("/:storeId", storeController.getStore);
 router.get("/search/:city", storeController.searchStore);
+router.put(
+  "/update-store-products/:storeId",
+  storeController.updateStoreProducts
+);
 export default router;
