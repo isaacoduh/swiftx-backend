@@ -5,7 +5,7 @@
   "main": "./src/index.ts",
   "scripts": {
     "dev": "concurrently \"nodemon\" \"npm run stripe\"",
-    "stripe": "stripe listen --forward-to localhost:7100/api/order/checkout/webhook",
+    "stripe": "stripe listen --forward-to localhost:7100/api/v1/order/handle-webhook",
     "build": "npm install && npx tsc",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -2,11 +2,11 @@ import { ProductItemType } from "./../models/store.model";
 // get my orders
 import Stripe from "stripe";
 import { Request, Response } from "express";
-import Order from "../models/order";
+import Order from "../models/order.model";
 import Store from "../models/store.model";
 
-const STRIPE = new Stripe(process.env.STRIP_API_KEY as string);
-const FRONTEND_URL = process.env.FRONTEND_URL as string;
+const STRIPE = new Stripe("sk_test_UjCD2kLt6KIOevQyMSHBXc2M00PnxwK3GU");
+const FRONTEND_URL = "http://localhost:5173";
 const STRIPE_ENDPOINT_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
 type CheckoutSessionRequest = {
@@ -27,7 +27,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
     event = STRIPE.webhooks.constructEvent(
       req.body,
       sig as string,
-      STRIPE_ENDPOINT_SECRET
+      "whsec_c58b0399f811a59246e633eedf0a17173c16c0a0b98bdb151fed74be872e25b6"
     );
   } catch (error: any) {
     console.log(error);
@@ -50,6 +50,7 @@ const stripeWebhookHandler = async (req: Request, res: Response) => {
 const createCheckoutSession = async (req: Request, res: Response) => {
   try {
     const checkoutSessionRequest: CheckoutSessionRequest = req.body;
+    console.log(req.body);
     const store = await Store.findById(checkoutSessionRequest.storeId);
     if (!store) {
       throw new Error("Store Not found");
@@ -79,7 +80,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
     await newOrder.save();
     res.json({ url: session.url });
   } catch (error: any) {
-    res.status(500).json({ message: error.raw.message });
+    res.status(500).json({ message: error.message });
   }
 };
 

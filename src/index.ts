@@ -4,7 +4,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 import storeRoutes from "./routes/store.routes";
-import orderRoutes from "./routes/store.routes";
+import orderRoutes from "./routes/order.routes";
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING as string)
@@ -17,7 +17,7 @@ cloudinary.config({
 
 const app = express();
 app.use(cors());
-app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
+app.use("/api/v1/order/handle-webhook", express.raw({ type: "*/*" }));
 app.use(express.json());
 app.get("/health", async (req: Request, res: Response) => {
   res.send({ message: "health Ok!" });
