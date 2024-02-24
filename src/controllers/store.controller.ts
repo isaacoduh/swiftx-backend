@@ -89,6 +89,13 @@ const getMyStore = async (req: Request, res: Response) => {
 
 const createStore = async (req: Request, res: Response) => {
   try {
+    const existingStore = await Store.findOne({ user: req.userId });
+
+    if (existingStore) {
+      return res
+        .status(409)
+        .json({ message: "User restaurant already exists" });
+    }
     // check if existing user for logged in user
     const imageUrl = await uploadImage(req.file as Express.Multer.File);
 
@@ -162,4 +169,5 @@ export default {
   createStore,
   updateStoreProducts,
   updateStore,
+  getMyStore,
 };

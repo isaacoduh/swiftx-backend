@@ -10,8 +10,9 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5mb
 });
 
+router.get("/get-my-store", jwtCheck, jwtParse, storeController.getMyStore);
 router.post(
-  "/",
+  "/create-my-store",
   upload.single("imageFile"),
   jwtCheck,
   jwtParse,
@@ -26,7 +27,7 @@ router.put(
   storeController.updateStoreProducts
 );
 router.put(
-  "/update-store",
+  "/update-my-store",
   upload.single("imageFile"),
   jwtCheck,
   jwtParse,
