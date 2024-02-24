@@ -2,6 +2,8 @@
 import { Request, Response } from "express";
 import cloudinary from "cloudinary";
 
+import mongoose from "mongoose";
+
 import Store from "../models/store.model";
 
 const getStore = async (req: Request, res: Response) => {
@@ -72,6 +74,19 @@ const searchStore = async (req: Request, res: Response) => {
   }
 };
 
+const getMyStore = async (req: Request, res: Response) => {
+  try {
+    const store = await Store.findOne({ user: req.userId });
+    if (!store) {
+      return res.status(404).json({ message: "Store not found!" });
+    }
+    res.json(store);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Error fetching store!" });
+  }
+};
+
 const createStore = async (req: Request, res: Response) => {
   try {
     // check if existing user for logged in user
@@ -79,7 +94,7 @@ const createStore = async (req: Request, res: Response) => {
 
     const store = new Store(req.body);
     store.imageUrl = imageUrl;
-    // store user
+    store.user = new mongoose.Types.ObjectId(req.userId);
     store.lastUpdated = new Date();
     await store.save();
     res.status(201).send(store);
@@ -105,6 +120,34 @@ const updateStoreProducts = async (req: Request, res: Response) => {
   }
 };
 
+const updateStore = async (req: Request, res: Response) => {
+  try {
+    const store = await Store.findOne({ user: req.userId });
+    if (!store) {
+      return res.status(404).json({ message: "Store not found!" });
+    }
+
+    store.storeName = req.body.storeName;
+    store.city = req.body.city;
+    store.country = req.body.country;
+    store.deliveryPrice = req.body.deliveryPrice;
+    // categories, estimatedDeliveryTimes
+    store.productItems = req.body.productItems;
+    store.lastUpdated = new Date();
+
+    if (req.file) {
+      const imageUrl = await uploadImage(req.file as Express.Multer.File);
+      store.imageUrl = imageUrl;
+    }
+
+    await store.save();
+    res.status(200).send(store);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
 const uploadImage = async (file: Express.Multer.File) => {
   const image = file;
   const base64Image = Buffer.from(image.buffer).toString("base64");
@@ -113,4 +156,10 @@ const uploadImage = async (file: Express.Multer.File) => {
   return uploadResponse.url;
 };
 
-export default { getStore, searchStore, createStore, updateStoreProducts };
+export default {
+  getStore,
+  searchStore,
+  createStore,
+  updateStoreProducts,
+  updateStore,
+};

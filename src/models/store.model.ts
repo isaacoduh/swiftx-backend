@@ -12,6 +12,7 @@ const productItemSchema = new mongoose.Schema({
 export type ProductItemType = InferSchemaType<typeof productItemSchema>;
 
 const storeSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   storeName: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },
