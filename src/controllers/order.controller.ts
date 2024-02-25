@@ -70,6 +70,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
 
     const newOrder = new Order({
       store: store,
+      user: req.userId,
       status: "placed",
       deliveryInformation: checkoutSessionRequest.deliveryInformation,
       cartItem: checkoutSessionRequest.cartItems,
