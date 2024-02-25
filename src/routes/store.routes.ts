@@ -33,4 +33,11 @@ router.put(
   jwtParse,
   storeController.updateStore
 );
+router.get("/order", jwtCheck, jwtParse, storeController.getMyStoreOrders);
+router.patch(
+  "/order/:orderId/status",
+  jwtCheck,
+  jwtParse,
+  storeController.updateOrderStatus
+);
 export default router;

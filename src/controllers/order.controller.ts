@@ -9,6 +9,18 @@ const STRIPE = new Stripe("sk_test_UjCD2kLt6KIOevQyMSHBXc2M00PnxwK3GU");
 const FRONTEND_URL = "http://localhost:5173";
 const STRIPE_ENDPOINT_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
+const getMyOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await Order.find({ user: req.userId })
+      .populate("store")
+      .populate("user");
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
 type CheckoutSessionRequest = {
   cartItems: { productItemId: string; name: string; quantity: string }[];
   deliveryInformation: {
@@ -133,4 +145,4 @@ const createSession = async (
   return sessionData;
 };
 
-export default { createCheckoutSession, stripeWebhookHandler };
+export default { getMyOrders, createCheckoutSession, stripeWebhookHandler };

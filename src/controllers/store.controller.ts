@@ -5,6 +5,7 @@ import cloudinary from "cloudinary";
 import mongoose from "mongoose";
 
 import Store from "../models/store.model";
+import Order from "../models/order.model";
 
 const getStore = async (req: Request, res: Response) => {
   try {
@@ -163,6 +164,49 @@ const uploadImage = async (file: Express.Multer.File) => {
   return uploadResponse.url;
 };
 
+const getMyStoreOrders = async (req: Request, res: Response) => {
+  try {
+    const store = await Store.findOne({ user: req.userId });
+    if (!store) {
+      return res.status(404).json({ message: "Store not found!" });
+    }
+
+    const orders = await Order.find({ store: store._id })
+      .populate("store")
+      .populate("user");
+
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+const updateOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found!" });
+    }
+
+    const store = await Store.findById(order.store);
+    if (store?.user?._id.toString() !== req.userId) {
+      return res.status(401).send();
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.status(200).json(order);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Unale to update order status" });
+  }
+};
+
 export default {
   getStore,
   searchStore,
@@ -170,4 +214,6 @@ export default {
   updateStoreProducts,
   updateStore,
   getMyStore,
+  getMyStoreOrders,
+  updateOrderStatus,
 };
