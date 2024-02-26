@@ -33,7 +33,7 @@ router.put(
   jwtParse,
   storeController.updateStore
 );
-router.get("/order", jwtCheck, jwtParse, storeController.getMyStoreOrders);
+router.get("/orders", jwtCheck, jwtParse, storeController.getMyStoreOrders);
 router.patch(
   "/order/:orderId/status",
   jwtCheck,

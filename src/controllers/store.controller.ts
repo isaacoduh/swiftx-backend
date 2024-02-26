@@ -167,6 +167,7 @@ const uploadImage = async (file: Express.Multer.File) => {
 const getMyStoreOrders = async (req: Request, res: Response) => {
   try {
     const store = await Store.findOne({ user: req.userId });
+    console.log(store);
     if (!store) {
       return res.status(404).json({ message: "Store not found!" });
     }
