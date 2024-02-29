@@ -1,0 +1,8 @@
+## Work Roadmap
+
+vendor:
+- create basic account as vendor [x]
+
+admin:
+- profile an admin user
+- login as a profiled admin
