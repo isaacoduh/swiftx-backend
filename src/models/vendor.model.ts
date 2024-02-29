@@ -43,5 +43,5 @@ vendorSchema.methods.hashPassword = async function (
   return hash(password, SALT_ROUND);
 };
 
-const VendorModel = model("Vendor", vendorSchema, "Vendor");
-export { VendorModel };
+const VendorModel = model("Vendor", vendorSchema);
+export default VendorModel;
